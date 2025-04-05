@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+
+  mysql-shipping:
+    image: mysql:5.7
+    container_name: mysql-shipping
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: shipping_db
+      MYSQL_USER: shipping_user
+      MYSQL_PASSWORD: shipping_pass
+    ports:
+      - "3307:3307"   # expor localmente na porta 3307
+    volumes:
+      - mysql-shipping-data:/var/lib/mysql
+    networks:
+      - shipping-network
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"     # porta para apps
+      - "15672:15672"   # dashboard web
+    networks:
+      - shipping-network
+
+  shipping-service:
+    build: .
+    container_name: shipping-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-shipping:3306/shipping_db
+      SPRING_DATASOURCE_USERNAME: shipping_user
+      SPRING_DATASOURCE_PASSWORD: shipping_pass
+    depends_on:
+      - mysql-shipping
+      - rabbitmq
+    ports:
+      - "8081:8081"
+    command: >
+      sh -c "
+        echo 'Aguardando MySQL...';
+        until mysqladmin ping -h mysql-shipping --silent; do
+          echo 'Ainda não disponivel...';
+          sleep 2;
+        done;
+        echo 'MySQL pronto! A iniciar aplicacao...';
+        java -jar app.jar
+      "
+    networks:
+      - shipping-network
+
+volumes:
+  mysql-shipping-data:
+
+networks:
+  shipping-network:
