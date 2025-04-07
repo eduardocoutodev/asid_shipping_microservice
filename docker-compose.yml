@@ -15,6 +15,7 @@ services:
       - mysql-shipping-data:/var/lib/mysql
     networks:
       - shipping-network
+    command: --disable-ssl --skip-ssl
 
   rabbitmq:
     image: rabbitmq:management
