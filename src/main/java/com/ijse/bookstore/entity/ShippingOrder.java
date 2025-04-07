@@ -17,6 +17,26 @@ public class ShippingOrder {
     @Column(name = "shippingorder_id")
     private Long id;
 
+    // Associação com a Order confirmada
+    @OneToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    // Associação com o utilizador que fez a encomenda
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    // Dados necessários para envio (que podem ou não coincidir com o perfil do user)
+    private String address;
+    private String city;
+    private String postalCode;
+
+    private LocalDate shippingDate;
+    private String trackingNumber;
+}
+
+    /*
     @Column
     private String firstName;
 
@@ -26,14 +46,15 @@ public class ShippingOrder {
     @Column
     private String address;
 
-    @Column 
+    @Column
     private String city;
 
-    @Column 
+    @Column
     private String email;
 
-    @Column 
+    @Column
     private String postal_code;
-
+    
+     */
 
 }

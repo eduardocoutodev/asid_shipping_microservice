@@ -11,7 +11,8 @@ services:
       MYSQL_USER: shipping_user
       MYSQL_PASSWORD: shipping_pass
     ports:
-      - "3307:3307"   # expor localmente na porta 3307
+      # expor localmente na porta 3307 - "3307:3307"
+      - "3307:3306"
     volumes:
       - mysql-shipping-data:/var/lib/mysql
     networks:
