@@ -1,8 +1,6 @@
-version: '3.8'
 services:
-
   mysql-shipping:
-    image: mysql:5.7
+    image: mysql:8.0.0
     container_name: mysql-shipping
     restart: always
     environment:
@@ -17,6 +15,7 @@ services:
       - mysql-shipping-data:/var/lib/mysql
     networks:
       - shipping-network
+    command: --disable-ssl --skip-ssl
 
   rabbitmq:
     image: rabbitmq:management
@@ -29,6 +28,8 @@ services:
 
   shipping-service:
     build: .
+    profiles:
+      - application
     container_name: shipping-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-shipping:3306/shipping_db

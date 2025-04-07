@@ -22,20 +22,10 @@ public class ShippingOrderController {
     @Autowired
     private ShippingOrderService shippingOrderService;
 
-    @PostMapping("/shipping")
-    public ResponseEntity<ShippingOrder> createShippingOrder(@RequestBody ShippingOrder shippingOrder){
-
-        ShippingOrder shippedOrder = shippingOrderService.createShippingOrder(shippingOrder);
-
-        return new ResponseEntity<>(shippedOrder,HttpStatus.CREATED);
-    }
-
     @GetMapping("/shipping")
     public ResponseEntity<List<ShippingOrder>> getAllShippingOrders(){
-
         List<ShippingOrder> shippedOrder = shippingOrderService.getAllShippingOrders();
 
         return new ResponseEntity<>(shippedOrder,HttpStatus.OK);
-        
     }
 }
