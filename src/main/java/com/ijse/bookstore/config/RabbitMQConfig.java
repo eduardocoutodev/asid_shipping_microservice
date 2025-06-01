@@ -2,24 +2,21 @@ package com.ijse.bookstore.config;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String SHIPPING_QUEUE = "shipping.queue";
-    public static final String SHIPPING_EXCHANGE = "shipping.exchange";
-    public static final String SHIPPING_ROUTING_KEY = "shipping.routingkey";
-
     @Bean
-    public Queue shippingQueue() {
-        return new Queue(SHIPPING_QUEUE);
+    public Queue shippingQueue(@Value("${service.shipping.queue.name}") String shippingQueue) {
+        return new Queue(shippingQueue);
     }
 
     @Bean
-    public TopicExchange shippingExchange() {
-        return new TopicExchange(SHIPPING_EXCHANGE); // Cria uma exchange com o nome definido acima
+    public TopicExchange shippingExchange(@Value("${service.shipping.exchange.name}") String shippingExchange) {
+        return new TopicExchange(shippingExchange);
     }
 
     @Bean
@@ -28,10 +25,14 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding shippingBinding(Queue shippingQueue, TopicExchange shippingExchange) {
+    public Binding shippingBinding(
+            Queue shippingQueue,
+            TopicExchange shippingExchange,
+            @Value("${service.shipping.routing.name}") String shippingRouting
+    ) {
         return BindingBuilder
-                .bind(shippingQueue) // Fila de destino
-                .to(shippingExchange) // Exchange de origem
-                .with(SHIPPING_ROUTING_KEY); // Routing key usada na ligação
+                .bind(shippingQueue)
+                .to(shippingExchange)
+                .with(shippingRouting);
     }
 }

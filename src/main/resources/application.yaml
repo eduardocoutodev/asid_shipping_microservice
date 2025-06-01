@@ -22,3 +22,11 @@ spring:
     password: guest
 
 
+service:
+  shipping:
+    queue:
+      name: shipping.queue
+    exchange:
+      name: shipping.exchange
+    routing:
+      name: shipping.routingkey

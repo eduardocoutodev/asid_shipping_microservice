@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.ijse.bookstore.dto.OrderShippingConfirmation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ijse.bookstore.entity.ShippingOrder;
@@ -14,8 +13,11 @@ import com.ijse.bookstore.repository.ShippingOrderRepository;
 @Service
 public class ShippingOrderServiceImpl implements ShippingOrderService {
     
-    @Autowired
-    private ShippingOrderRepository shippingOrderRepository;
+    private final ShippingOrderRepository shippingOrderRepository;
+
+    public ShippingOrderServiceImpl(ShippingOrderRepository shippingOrderRepository) {
+        this.shippingOrderRepository = shippingOrderRepository;
+    }
 
     @Override
     public ShippingOrder createShippingOrder(OrderShippingConfirmation orderShippingConfirmation){

@@ -20,18 +20,16 @@ public class ShippingOrderConsumer {
         this.objectMapper = objectMapper;
     }
 
-    @RabbitListener(queues = "shipping.queue")
+    @RabbitListener(queues = "${service.shipping.queue.name}")
     public void receiveOrderConfirmation(String orderShippingConfirmationJson) {
         log.info("operation='receiveOrderConfirmation', message='Received order confirmation', ordershippingConfirmation={}", orderShippingConfirmationJson);
-
-        OrderShippingConfirmation orderShippingConfirmation = null;
         try {
-            orderShippingConfirmation = objectMapper.readValue(orderShippingConfirmationJson, OrderShippingConfirmation.class);
+            var orderShippingConfirmation = objectMapper.readValue(orderShippingConfirmationJson, OrderShippingConfirmation.class);
+            shippingOrderService.createShippingOrder(orderShippingConfirmation);
+            log.info("operation='receiveOrderConfirmation', message='Processed order confirmation'");
         } catch (JsonProcessingException e) {
             log.error("operation='receiveOrderConfirmation', message='Error converting the order from json'");
             throw new RuntimeException(e);
         }
-        shippingOrderService.createShippingOrder(orderShippingConfirmation);
-        log.info("operation='receiveOrderConfirmation', message='Processed order confirmation'");
     }
 }
